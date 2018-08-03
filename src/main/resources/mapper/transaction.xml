@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fcsdm.sdmserver.mvc.mapper.TransactionMapper">
+
+	<resultMap id="Transaction" type="com.fcsdm.sdmserver.mvc.model.dto.Transaction">
+		<id property="seq" column="SEQ" />
+		<result property="status" column="STATUS" />
+		<result property="title" column="TITLE" />
+		<result property="amount" column="AMOUNT" />
+		<result property="occurDate" column="OCCUR_DATE" />
+		<result property="created" column="CREATED" />
+		<result property="updated" column="UPDATED" />
+	</resultMap>
+	
+	<select id="selectTransactions" resultMap="Transaction">
+		SELECT SEQ
+			   ,STATUS
+		       ,TITLE
+		       ,AMOUNT
+		       ,CONCAT(SUBSTRING(OCCUR_DATE, 1, 4), ".",TRIM(LEADING '0' FROM (SUBSTRING(OCCUR_DATE, 5, 2))), ".", TRIM(LEADING '0' FROM (SUBSTRING(OCCUR_DATE, 7, 2)))) AS OCCUR_DATE
+		       ,CREATED
+		       ,UPDATED
+		  FROM TRANSACTION_HISTORY
+		 WHERE OCCUR_DATE BETWEEN #{startDate} AND #{endDate}
+		 ORDER BY OCCUR_DATE DESC
+	</select>
+	
+	<insert id="insertTransaction" parameterType="java.util.Map">
+		INSERT INTO TRANSACTION_HISTORY ( STATUS, TITLE, AMOUNT, OCCUR_DATE, CREATED, UPDATED)
+		VALUES ( #{status}, #{title}, #{amount}, #{occurDate}, NOW(), NOW() )
+	</insert>
+
+</mapper>

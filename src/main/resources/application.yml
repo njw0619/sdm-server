@@ -1,0 +1,45 @@
+spring.application.name: sdm-server
+
+slack:
+  api.token: xoxp-409226773363-410396625607-411692366646-b18d1d9bf05f8dbc3774a90bbfb18651
+  channel.id: CC13H63EY
+  test.channel.id: CC244EPK4
+
+
+---
+
+spring :
+  profiles : local
+  datasource :
+    driver-class-name : com.mysql.jdbc.Driver
+    url : jdbc:mysql://fcsdm.vps.phps.kr:3306/fcsdm?useUnicode=yes&characterEncoding=utf8
+    username : njw0619
+    password : skawodn1
+    type: org.apache.commons.dbcp.BasicDataSource
+    max-active : 4
+    initial-size : 1
+    max-idle : 1
+    min-idle : 1
+    connection-test-query : SELECT 1
+    test-while-idle : true
+    test-on-borrow : true
+    validation-query : SELECT 1
+
+---
+
+spring :
+  profiles : prod
+  datasource :
+    driver-class-name : com.mysql.jdbc.Driver
+    url : jdbc:mysql://localhost:3306/fcsdm?useUnicode=yes&characterEncoding=utf8
+    username : njw0619
+    password : skawodn1
+    type: org.apache.commons.dbcp.BasicDataSource
+    max-active : 4
+    initial-size : 1
+    max-idle : 1
+    min-idle : 1
+    connection-test-query : SELECT 1
+    test-while-idle : true
+    test-on-borrow : true
+    validation-query : SELECT 1

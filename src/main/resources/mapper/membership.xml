@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fcsdm.sdmserver.mvc.mapper.MembershipMapper">
+
+	<resultMap id="Membership" type="com.fcsdm.sdmserver.mvc.model.dto.Membership">
+		<id property="memberId" column="ID" />
+		<result property="name" column="NAME" />
+		<result property="grade" column="GRADE" />
+		<result property="occupation" column="OCCUPATION" />
+		<result property="occurMonth" column="OCCUR_MONTH" />
+	</resultMap>
+	
+	<select id="selectMemberships" resultMap="Membership">
+		SELECT T1.NAME
+			   ,T1.GRADE
+		       ,T1.OCCUPATION
+		       ,MAX(T2.OCCUR_MONTH) AS OCCUR_MONTH
+		  FROM MEMBER T1
+		  LEFT JOIN MEMBERSHIP T2
+		    ON T1.ID = T2.MEMBER_ID
+		 GROUP BY T1.NAME
+			   ,T1.GRADE
+		       ,T1.OCCUPATION
+		 ORDER BY T1.NAME
+	</select>
+
+	<select id="selectUnpaidMemberList" resultMap="Membership">
+		SELECT NAME, GRADE, OCCUPATION, OCCUR_MONTH
+		  FROM ( SELECT T1.NAME,
+						T1.GRADE,
+						T1.OCCUPATION,
+						MAX(T2.OCCUR_MONTH) AS OCCUR_MONTH
+						FROM MEMBER T1
+						LEFT JOIN MEMBERSHIP T2
+						ON T1.ID = T2.MEMBER_ID
+						GROUP BY T1.NAME,
+						T1.GRADE,
+						T1.OCCUPATION ) T
+		WHERE T.OCCUR_MONTH IS NULL OR ( T.OCCUR_MONTH &lt; DATE_FORMAT(NOW(), '%Y%m') AND T.OCCUR_MONTH &lt;&gt; '2018')
+	</select>
+	
+	<insert id="insertMembership" parameterType="java.util.Map">
+		INSERT INTO MEMBERSHIP ( MEMBER_ID, OCCUR_MONTH, STATUS, CREATED, UPDATED) 
+		VALUES ( #{memberId}, #{occurMonth}, 'O', NOW(), NOW())
+	</insert>
+
+</mapper>

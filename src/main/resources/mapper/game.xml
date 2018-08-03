@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fcsdm.sdmserver.mvc.mapper.GameMapper">
+	
+	<resultMap id="Score" type="com.fcsdm.sdmserver.mvc.model.dto.Score">
+		<id property="seq" column="SEQ" />
+		<result property="matchSeq" column="MATCH_SEQ" />
+		<result property="occurDate" column="OCCUR_DATE" />
+		<result property="place" column="PLACE" />
+		<result property="team1" column="TEAM1" />
+		<result property="score1" column="SCORE1" />
+		<result property="team2" column="TEAM2" />
+		<result property="score2" column="SCORE2" />
+		<result property="created" column="CREATED" />
+		<result property="updated" column="UPDATED" />
+	</resultMap>
+	
+	<insert id="insertGame" parameterType="java.util.Map">
+		INSERT INTO GAME ( TITLE, PLACE, OCCUR_DATE, CREATED, UPDATED )
+		VALUES ( #{title}, #{place}, #{occurDate}, NOW(), NOW() )  
+	</insert>
+	
+	<insert id="insertAttendance" parameterType="java.util.Map">
+		INSERT INTO ATTENDANCE ( MATCH_SEQ, MEMBER_ID, CREATED, UPDATED )
+		VALUES ( #{matchSeq}, #{memberId}, NOW(), NOW() )  
+	</insert>
+	
+	<insert id="insertCarpool" parameterType="java.util.Map">
+		INSERT INTO CARPOOL ( MATCH_SEQ, MEMBER_ID, CREATED, UPDATED )
+		VALUES ( #{matchSeq}, #{memberId}, NOW(), NOW() )  
+	</insert>
+	
+	<insert id="insertRecord" parameterType="java.util.Map">
+		INSERT INTO RECORD ( MATCH_SEQ, TEAM, MEMBER_ID, TYPE, VALUE, CREATED, UPDATED )
+		VALUES ( #{matchSeq}, #{team}, #{memberId}, #{type}, #{value}, NOW(), NOW() )  
+	</insert>
+	
+	<insert id="insertScore" parameterType="java.util.Map">
+		INSERT INTO SCORE ( MATCH_SEQ, TEAM1, SCORE1, TEAM2, SCORE2, CREATED, UPDATED )
+		VALUES ( #{matchSeq}, #{team1}, #{score1}, #{team2}, #{score2}, NOW(), NOW() )  
+	</insert>
+	
+	<select id="selectLatestSeq" parameterType="java.util.Map" resultType="int">
+		SELECT MAX(SEQ)
+		  FROM GAME
+	</select>
+	
+	<select id="selectScore" resultMap="Score">
+		SELECT T1.SEQ
+			   ,T1.MATCH_SEQ
+			   ,CONCAT(SUBSTRING(T2.OCCUR_DATE, 1, 4), ".", SUBSTRING(T2.OCCUR_DATE, 5, 2), ".", SUBSTRING(T2.OCCUR_DATE, 7, 2)) AS OCCUR_DATE
+			   ,T2.PLACE
+			   ,T1.TEAM1
+			   ,T1.SCORE1
+			   ,T1.TEAM2
+			   ,T1.SCORE2
+			   ,T1.CREATED
+			   ,T1.UPDATED
+		  FROM SCORE T1
+		  JOIN GAME T2
+		    ON T1.MATCH_SEQ = T2.SEQ
+		 ORDER BY T2.CREATED DESC
+	</select>
+	
+	<select id="selectAttendRanking" resultType="java.util.Map">
+		SELECT T2.NAME
+		       ,CASE WHEN T2.TEAM = 'BLUE' THEN '청' ELSE '백' END AS TEAM
+			   ,COUNT(*) as COUNT
+		  FROM ATTENDANCE T1
+		  JOIN MEMBER T2
+		    ON T1.MEMBER_ID = T2.ID
+		 GROUP BY T2.NAME
+		 ORDER BY 3 DESC, T2.NAME
+	</select>
+	
+	<select id="selectGoalRanking" resultType="java.util.Map">
+		SELECT T2.NAME 
+		       ,CASE WHEN T2.TEAM = 'BLUE' THEN '청' ELSE '백' END AS TEAM
+		       ,SUM(T1.VALUE) AS GOAL
+		  FROM RECORD T1
+		  JOIN MEMBER T2
+		    ON T1.MEMBER_ID = T2.ID
+		 WHERE T1.TYPE = 'GOAL'
+		 GROUP BY T2.NAME
+		 ORDER BY 3 DESC, T2.NAME
+	</select>
+	
+	<select id="selectMVPRanking" resultType="java.util.Map">
+		SELECT T2.NAME 
+		       ,CASE WHEN T2.TEAM = 'BLUE' THEN '청' ELSE '백' END AS TEAM
+		       ,COUNT(*) AS COUNT
+		  FROM RECORD T1
+		  JOIN MEMBER T2
+		    ON T1.MEMBER_ID = T2.ID
+		 WHERE T1.TYPE = 'MVP'
+		 GROUP BY T2.NAME
+		 ORDER BY 3 DESC, T2.NAME
+	</select>
+</mapper>

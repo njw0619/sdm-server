@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fcsdm.sdmserver.mvc.mapper.MemberMapper">
+
+	<resultMap id="Member" type="com.fcsdm.sdmserver.mvc.model.dto.Member">
+		<id property="id" column="ID" />
+		<result property="name" column="NAME" />
+		<result property="phone" column="PHONE" />
+		<result property="position" column="POSITION" />
+		<result property="joinDate" column="JOIN_DATE" />
+		<result property="status" column="STATUS" />
+		<result property="occupation" column="OCCUPATION" />
+		<result property="grade" column="GRADE" />
+		<result property="team" column="TEAM" />
+		<result property="created" column="CREATED" />
+		<result property="updated" column="UPDATED" />
+	</resultMap>
+
+	<select id="selectMembers" resultMap="Member">
+		SELECT ID
+		       ,NAME
+		       ,PHONE
+			   ,POSITION
+			   ,JOIN_DATE
+			   ,STATUS 
+			   ,CASE WHEN OCCUPATION = 'W' THEN '직장인' ELSE '학생' END AS OCCUPATION
+			   ,CASE WHEN GRADE = '1' THEN '정기' ELSE '명예' END AS GRADE
+			   ,CASE WHEN TEAM = 'WHITE' THEN '백' ELSE '청' END AS TEAM
+			   ,CREATED
+			   ,UPDATED
+		  FROM MEMBER
+		 WHERE STATUS = 'O'
+		 ORDER BY ID
+	</select>
+	
+	<select id="selectMember" parameterType="java.util.Map" resultMap="Member">
+		SELECT ID
+		       ,NAME
+		       ,PHONE
+			   ,POSITION
+			   ,JOIN_DATE
+			   ,STATUS
+			   ,OCCUPATION
+			   ,GRADE
+			   ,TEAM
+			   ,CREATED
+			   ,UPDATED
+		  FROM MEMBER
+		 WHERE STATUS = 'O'
+		   AND ID = #{id}
+	</select>
+	
+	<select id="selectMemberByName" parameterType="java.util.Map" resultMap="Member">
+		SELECT ID
+		       ,NAME
+		       ,PHONE
+			   ,POSITION
+			   ,JOIN_DATE
+			   ,STATUS
+			   ,OCCUPATION
+			   ,GRADE
+			   ,TEAM
+			   ,CREATED
+			   ,UPDATED
+		  FROM MEMBER
+		 WHERE STATUS = 'O'
+		   AND NAME LIKE CONCAT('%', #{name})
+	</select>
+
+</mapper>
