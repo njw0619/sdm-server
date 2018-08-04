@@ -23,7 +23,7 @@ public class SlackService {
     @Value("${slack.api.token}")
     String token;
 
-    @Value("${slack.test.channel.id}")
+    @Value("${slack.channel.id}")
     String channelId;
 
     public void makePoll(String title){

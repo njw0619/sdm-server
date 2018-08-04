@@ -12,6 +12,7 @@ import com.fcsdm.sdmserver.mvc.model.dto.Transaction;
 import com.fcsdm.sdmserver.mvc.service.MemberService;
 import com.fcsdm.sdmserver.mvc.service.MembershipService;
 import com.fcsdm.sdmserver.mvc.service.TransactionService;
+import com.fcsdm.sdmserver.rest.service.SlackService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ private static final Logger logger = LoggerFactory.getLogger(MembershipControlle
 	
 	@Autowired
 	MemberService memberService;
+
+	@Autowired
+	SlackService slackService;
 	
 	@Autowired
 	TransactionService transactionService;
@@ -111,8 +115,11 @@ private static final Logger logger = LoggerFactory.getLogger(MembershipControlle
 		transaction.setTitle(member.getName() + " 회비납부");
 		transaction.setAmount(amount);
 		transaction.setOccurDate(currentDate);
-		transactionService.addTransaction(transaction);	
-		
+		transactionService.addTransaction(transaction);
+
+		slackService.sendMessage("짝짝! " + name + "님이 " + occurMonths + "월 회비를 납부했습니다!");
+		slackService.sendMessage("회비 사용내역 알림\n" + name + " " + occurMonths + "회비 " + amount + "원 수입");
+
 		this.addFlashMessage(new FlashMessage("success", "정상적으로 등록되었습니다."));
 		
 		return "redirect:form";

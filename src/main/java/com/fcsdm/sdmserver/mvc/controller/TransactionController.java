@@ -101,7 +101,7 @@ private static final Logger logger = LoggerFactory.getLogger(TransactionControll
 		transaction.setOccurDate(occurDate);
 		transactionService.addTransaction(transaction);
 
-		slackService.sendMessage("회비 사용 내역 알림\n" + title + " " + amount + "원" + ("O".equals(status) ? "지출" : "수입"));
+		slackService.sendMessage("회비 사용내역 알림\n" + title + " " + amount + "원 " + ("O".equals(status) ? "지출" : "수입"));
 
 		this.addFlashMessage(new FlashMessage("success", "정상적으로 등록되었습니다."));
 		return "redirect:form";

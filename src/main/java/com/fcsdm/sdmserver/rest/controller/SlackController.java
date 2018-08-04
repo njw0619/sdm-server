@@ -18,6 +18,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 @RestController
 @RequestMapping("/internal/slack")
@@ -72,7 +73,16 @@ public class SlackController {
 
         log.info("Slack outcomming webhook params. token={}, text={}", token, text);
 
-        String title = "금일 축구 번개";
+        StringTokenizer st = new StringTokenizer(text, " ");
+
+        StringBuilder gameInfo = new StringBuilder();
+        while(st.hasMoreTokens()){
+            String word = st.nextToken();
+            if("번개해요".equals(word)) continue;
+            gameInfo.append(word + " ");
+        }
+
+        String title = "번개! " + gameInfo.toString();
         slackService.makePoll(title);
     }
 
