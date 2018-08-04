@@ -10,6 +10,7 @@ import java.util.Map;
 import com.fcsdm.sdmserver.mvc.model.dto.FlashMessage;
 import com.fcsdm.sdmserver.mvc.model.dto.Transaction;
 import com.fcsdm.sdmserver.mvc.service.TransactionService;
+import com.fcsdm.sdmserver.rest.service.SlackService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ private static final Logger logger = LoggerFactory.getLogger(TransactionControll
 	
 	@Autowired
 	TransactionService transactionService;
+
+	@Autowired
+	SlackService slackService;
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -96,6 +100,9 @@ private static final Logger logger = LoggerFactory.getLogger(TransactionControll
 		transaction.setAmount(amount);
 		transaction.setOccurDate(occurDate);
 		transactionService.addTransaction(transaction);
+
+		slackService.sendMessage("회비 사용 내역 알림\n" + title + " " + amount + "원" + ("O".equals(status) ? "지출" : "수입"));
+
 		this.addFlashMessage(new FlashMessage("success", "정상적으로 등록되었습니다."));
 		return "redirect:form";
 	}

@@ -1,10 +1,14 @@
 spring.application.name: sdm-server
 
 slack:
-  api.token: xoxp-409226773363-410396625607-411692366646-b18d1d9bf05f8dbc3774a90bbfb18651
+  api.token: xoxp-409226773363-410396625607-410755710242-09626eab16d10c21455e5519ea070740
   channel.id: CC13H63EY
   test.channel.id: CC244EPK4
 
+game:
+  regular:
+    dayOfWeek: 6
+    time: 22-24
 
 ---
 
