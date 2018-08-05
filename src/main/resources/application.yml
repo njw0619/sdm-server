@@ -1,7 +1,7 @@
 spring.application.name: sdm-server
 
 slack:
-  api.token: xoxp-409226773363-410396625607-410866030355-3d086fc86c65ee7c466dd9435a0e9a2c
+  api.token: xoxp-409226773363-410396625607-412319678134-66a98a54701e2c2a74d994510309aac6
   channel.id: CC13H63EY
   test.channel.id: CC244EPK4
 
