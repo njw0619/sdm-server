@@ -24,8 +24,7 @@ public class SlackService {
     @Autowired
     RestTemplate restTemplate;
 
-    @Value("${slack.api.token}")
-    String token;
+    String token = "xoxp-409226773363-410396625607-410286296912-6d98b791c4f6af017a74a979d080459f";
 
     @Value("${slack.channel.id}")
     String channelId;
