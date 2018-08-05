@@ -2,6 +2,7 @@ package com.fcsdm.sdmserver.rest.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fcsdm.sdmserver.utils.AES256Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,10 +13,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -24,12 +25,26 @@ public class SlackService {
     @Autowired
     RestTemplate restTemplate;
 
-    String token = "xoxp-409226773363-410396625607-410286296912-6d98b791c4f6af017a74a979d080459f";
+    private static String token;
+
+    private static String encryptToken = "FtzXaUFJYc05+BsRY9GTjMnGGJVKlpbepkXU+ljUA1ELVtgf7UmDpobB4gouYoKcwK+Dsngz1hr0w0KGi2ZFiRe2zQBPbWBrwQo6AT6Qk6Y=";
+
+    private static String key = "123456789ABCDEFGHIJKLMNOP";
 
     @Value("${slack.channel.id}")
     String channelId;
 
-    public void makePoll(String title){
+    static {
+        AES256Util aes = null;
+        try {
+            aes = new AES256Util(key);
+            token = aes.decrypt(encryptToken);
+        } catch (UnsupportedEncodingException | GeneralSecurityException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    public void makePoll(String title) {
 
         HttpHeaders headers = new HttpHeaders();
         MediaType mediaType = new MediaType("application", "x-www-form-urlencoded", StandardCharsets.UTF_8);
