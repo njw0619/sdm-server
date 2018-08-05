@@ -1,5 +1,6 @@
 package com.fcsdm.sdmserver.mvc.controller;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -119,7 +120,7 @@ private static final Logger logger = LoggerFactory.getLogger(MembershipControlle
 		transaction.setOccurDate(currentDate);
 		transactionService.addTransaction(transaction);
 
-		NumberFormat format = NumberFormat.getInstance();
+		DecimalFormat format = new DecimalFormat("#,###");
 		slackService.sendMessage("짝짝! " + name + "님이 " + occurMonths + "월 회비를 납부했습니다!");
 		slackService.sendMessage("회비 사용내역 알림\n" + name + " " + occurMonths + "월 회비납부! " + format.format(amount) + "원 수입");
 
