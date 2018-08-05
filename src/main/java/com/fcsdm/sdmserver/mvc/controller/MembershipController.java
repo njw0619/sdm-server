@@ -1,5 +1,6 @@
 package com.fcsdm.sdmserver.mvc.controller;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.NumberUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -117,8 +119,9 @@ private static final Logger logger = LoggerFactory.getLogger(MembershipControlle
 		transaction.setOccurDate(currentDate);
 		transactionService.addTransaction(transaction);
 
+		NumberFormat format = NumberFormat.getInstance();
 		slackService.sendMessage("짝짝! " + name + "님이 " + occurMonths + "월 회비를 납부했습니다!");
-		slackService.sendMessage("회비 사용내역 알림\n" + name + " " + occurMonths + "월 회비납부! " + amount + "원 수입");
+		slackService.sendMessage("회비 사용내역 알림\n" + name + " " + occurMonths + "월 회비납부! " + format.format(amount) + "원 수입");
 
 		this.addFlashMessage(new FlashMessage("success", "정상적으로 등록되었습니다."));
 		
