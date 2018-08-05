@@ -17,7 +17,6 @@ public class Member {
     private String team;
     private Date created;
     private Date updated;
-    private String slackId;
 
     public int getId() {
         return id;
@@ -107,11 +106,4 @@ public class Member {
         this.updated = updated;
     }
 
-    public String getSlackId() {
-        return slackId;
-    }
-
-    public void setSlackId(String slackId) {
-        this.slackId = slackId;
-    }
 }

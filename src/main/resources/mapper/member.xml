@@ -16,7 +16,6 @@
 		<result property="team" column="TEAM" />
 		<result property="created" column="CREATED" />
 		<result property="updated" column="UPDATED" />
-		<result property="slackId" column="SLACK_ID" />
 	</resultMap>
 
 	<select id="selectMembers" resultMap="Member">

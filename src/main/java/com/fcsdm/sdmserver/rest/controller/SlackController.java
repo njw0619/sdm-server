@@ -117,16 +117,8 @@ public class SlackController {
 
         log.info("Slack: create conversation parameter. token={}, text={}", token, text);
 
-        Map<String, String> slackIdList = new HashMap<>();
-        List<Member> memberList = memberService.getMembers();
-        for(Member member : memberList){
-            slackIdList.put(member.getName(), member.getSlackId());
-        }
-
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-
-        text = text.replaceAll("@", "").replaceAll(",", "");
 
         StringTokenizer st = new StringTokenizer(text, " ");
 
@@ -134,9 +126,8 @@ public class SlackController {
         while(st.hasMoreTokens()){
             String word = st.nextToken();
             if("방생성".equals(word)) continue;
-            String slackId = MapUtils.getString(slackIdList, word);
             if(!StringUtils.isEmpty(userList.toString())) userList.append(",");
-            userList.append(slackId);
+            userList.append(word.replaceAll("@", "").replaceAll("<", "").replaceAll(">", ""));
         }
 
         String title = today.format(formatter) + "-경기";
