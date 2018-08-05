@@ -16,6 +16,7 @@
 		<result property="team" column="TEAM" />
 		<result property="created" column="CREATED" />
 		<result property="updated" column="UPDATED" />
+		<result property="slackId" column="SLACK_ID" />
 	</resultMap>
 
 	<select id="selectMembers" resultMap="Member">
@@ -30,6 +31,7 @@
 			   ,CASE WHEN TEAM = 'WHITE' THEN '백' ELSE '청' END AS TEAM
 			   ,CREATED
 			   ,UPDATED
+			   ,SLACK_ID
 		  FROM MEMBER
 		 WHERE STATUS = 'O'
 		 ORDER BY ID
