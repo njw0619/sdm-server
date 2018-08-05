@@ -30,7 +30,6 @@
 			   ,CASE WHEN TEAM = 'WHITE' THEN '백' ELSE '청' END AS TEAM
 			   ,CREATED
 			   ,UPDATED
-			   ,SLACK_ID
 		  FROM MEMBER
 		 WHERE STATUS = 'O'
 		 ORDER BY ID
