@@ -118,6 +118,8 @@ public class SlackController {
     @PostMapping("conversation")
     public void createConversation(@RequestParam("token") String token, @RequestParam("text") String text) throws IOException, InterruptedException {
 
+        log.info("Slack: create conversation parameter. token={}, text={}", token, text);
+
         Map<String, String> slackIdList = new HashMap<>();
         List<Member> memberList = memberService.getMembers();
         for(Member member : memberList){
