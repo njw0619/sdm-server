@@ -118,7 +118,7 @@ private static final Logger logger = LoggerFactory.getLogger(MembershipControlle
 		transactionService.addTransaction(transaction);
 
 		slackService.sendMessage("짝짝! " + name + "님이 " + occurMonths + "월 회비를 납부했습니다!");
-		slackService.sendMessage("회비 사용내역 알림\n" + name + " " + occurMonths + "회비 " + amount + "원 수입");
+		slackService.sendMessage("회비 사용내역 알림\n" + name + " " + occurMonths + "월 회비납부! " + amount + "원 수입");
 
 		this.addFlashMessage(new FlashMessage("success", "정상적으로 등록되었습니다."));
 		
