@@ -41,9 +41,6 @@ public class SlackController {
     @Autowired
     RestTemplate restTemplate;
 
-    @Value("${slack.api.token}")
-    private String token;
-
     @Value("${slack.test.channel.id}")
     private String channelId;
 
