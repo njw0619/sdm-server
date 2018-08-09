@@ -8,8 +8,13 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,46 +27,48 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class MyBatisConfig {
 
+    public static final String MYBATIS_MAPPER_LOCATION = "classpath:/mapper/*.xml";
+
     @Autowired
-    private DataSource dataSource;
+    private ApplicationContext applicationContext;
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource")
+    public DataSource dataSource(){
+        DataSource dataSource = DataSourceBuilder.create().build();
+        return dataSource;
+    }
 
     @Bean
     public PlatformTransactionManager transactionManager() {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dataSource());
         transactionManager.setGlobalRollbackOnParticipationFailure(false);
         return transactionManager;
     }
 
     @Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
-        final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource);
 
-        // mapper  설정
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        sessionFactory.setMapperLocations(resolver.getResources("classpath:/mapper/*.xml"));
+        Resource[] mapperLocationResources = applicationContext.getResources(MYBATIS_MAPPER_LOCATION);
 
-        // code 설정
-        //sessionFactory.setTypeAliasesPackage("com.sktechx.musicmate.admin");
+        SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
+        sessionFactoryBean.setDataSource(dataSource());
+        sessionFactoryBean.setConfiguration(createSessionConfiguration());
+        sessionFactoryBean.setMapperLocations(mapperLocationResources);
 
-//        // type handler 설정
-//        sessionFactory.setTypeHandlers(new TypeHandler[]{
-//                new OsType.TypeHandler(),
-//        });
+        sessionFactoryBean.afterPropertiesSet();
+        return sessionFactoryBean.getObject();
+    }
 
-        // session 설정
-//        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
-//        configuration.setAggressiveLazyLoading(true);
-//        configuration.setUseGeneratedKeys(true);
-//        configuration.setDefaultExecutorType(ExecutorType.REUSE);
-//        configuration.setDefaultStatementTimeout(3000);
-//        configuration.setMapUnderscoreToCamelCase(true);
-//        configuration.setJdbcTypeForNull(JdbcType.NULL);
-//
-//        sessionFactory.setConfiguration(configuration);
-
-//        sessionFactory.afterPropertiesSet();
-        return sessionFactory.getObject();
+    private org.apache.ibatis.session.Configuration createSessionConfiguration(){
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        configuration.setAggressiveLazyLoading(true);
+        configuration.setUseGeneratedKeys(true);
+        configuration.setDefaultExecutorType(ExecutorType.REUSE);
+        configuration.setDefaultStatementTimeout(3000);
+        configuration.setMapUnderscoreToCamelCase(true);
+        configuration.setJdbcTypeForNull(JdbcType.NULL);
+        return configuration;
     }
 
     @Bean
